@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2041
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B3D0F4BB-5D0E-436E-BDF9-E4AFB3B5698B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{F4097719-272B-45AF-809F-29B9B4290E6A}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeMapper", "src\TypeMapper\TypeMapper.csproj", "{CA86A3AF-F645-40F2-A41E-C8CF82CC3830}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6455E468-75F2-402E-A82C-FDC665FBF122}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeMapper.Tests", "test\TypeMapper.Tests\TypeMapper.Tests.csproj", "{C4F89121-37B6-419C-B1A8-76FE124FAD09}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CA86A3AF-F645-40F2-A41E-C8CF82CC3830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA86A3AF-F645-40F2-A41E-C8CF82CC3830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA86A3AF-F645-40F2-A41E-C8CF82CC3830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA86A3AF-F645-40F2-A41E-C8CF82CC3830}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4F89121-37B6-419C-B1A8-76FE124FAD09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4F89121-37B6-419C-B1A8-76FE124FAD09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4F89121-37B6-419C-B1A8-76FE124FAD09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4F89121-37B6-419C-B1A8-76FE124FAD09}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CA86A3AF-F645-40F2-A41E-C8CF82CC3830} = {B3D0F4BB-5D0E-436E-BDF9-E4AFB3B5698B}
+		{C4F89121-37B6-419C-B1A8-76FE124FAD09} = {6455E468-75F2-402E-A82C-FDC665FBF122}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {807D5071-C520-4184-BB2A-F71970E8BB1F}
+	EndGlobalSection
+EndGlobal

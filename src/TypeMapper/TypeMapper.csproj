@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Salih KARAHAN &lt;salih.karahan@karahan-lab.com&gt;</Authors>
+    <Company>Karahan LAB®™</Company>
+    <Description>TypeMapper is mapping types both</Description>
+    <Copyright>© 2018 Karahan LAB®™</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+    <PackageProjectUrl>https://github.com/SalihKARAHAN/TypeMapper</PackageProjectUrl>
+    <RepositoryType>https://github.com/SalihKARAHAN/TypeMapper</RepositoryType>
+    <PackageTags>typemapper, mapper, auto mapper, automatic mapping</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseUrl>https://github.com/SalihKARAHAN/TypeMapper/blob/master/LICENSE.txt</PackageLicenseUrl>
+  </PropertyGroup>
+
+</Project>
