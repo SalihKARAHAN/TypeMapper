@@ -43,11 +43,15 @@
 namespace TypeMapper
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
 
 
     public class Mapper : IMapper
     {
+        private static readonly Dictionary<string, Dictionary<string, PropertyInfo>> _typeTreasures = new Dictionary<string, Dictionary<string, PropertyInfo>>();
+
         public Mapper()
         {
         }
@@ -68,6 +72,50 @@ namespace TypeMapper
                 {
                     targetPropertyInfo.SetValue(targetInstance, sourcePropertyInfo.GetValue(sourceObject));
                 }
+            }
+
+            return targetInstance;
+        }
+        public TTargetType MapTov2<TTargetType>(object sourceObject)
+          where TTargetType : new()
+        {
+            TTargetType targetInstance = new TTargetType();
+            Type targetType = typeof(TTargetType);
+            if (!Mapper._typeTreasures.ContainsKey(targetType.FullName))
+            {
+                PropertyInfo[] targetProperties = targetType.GetProperties();
+                Dictionary<string, PropertyInfo> propertyMapOfType = new Dictionary<string, PropertyInfo>(targetProperties.Length);
+                foreach (PropertyInfo targetPropertyInfo in targetProperties)
+                {
+                    propertyMapOfType.Add(targetPropertyInfo.Name, targetPropertyInfo);
+                }
+
+                Mapper._typeTreasures.Add(targetType.FullName, propertyMapOfType);
+            }
+
+            Type sourceType = sourceObject.GetType();
+            if (!Mapper._typeTreasures.ContainsKey(sourceType.FullName))
+            {
+                PropertyInfo[] sourceProperties = sourceType.GetProperties();
+                Dictionary<string, PropertyInfo> propertyMapOfType = new Dictionary<string, PropertyInfo>(sourceProperties.Length);
+                foreach (PropertyInfo sourcePropertyInfo in sourceProperties)
+                {
+                    propertyMapOfType.Add(sourcePropertyInfo.Name, sourcePropertyInfo);
+                }
+
+                Mapper._typeTreasures.Add(sourceType.FullName, propertyMapOfType);
+            }
+
+            Dictionary<string, PropertyInfo> targetNamePropertyPair = Mapper._typeTreasures[targetType.FullName];
+            Dictionary<string, PropertyInfo> sourceNamePropertyPair = Mapper._typeTreasures[sourceType.FullName];
+            string[] matchedKeys = targetNamePropertyPair.Keys.Where(targetKey => sourceNamePropertyPair.Keys.Any(sourceKey => targetKey.Equals(sourceKey))).ToArray();
+
+            for (int i = 0; i < matchedKeys.Length; i++)
+            {
+                string matchedKey = matchedKeys[i];
+                PropertyInfo sourcePropertyInfo = sourceNamePropertyPair[matchedKey];
+                PropertyInfo targetPropertyInfo = targetNamePropertyPair[matchedKey];
+                targetPropertyInfo.SetValue(targetInstance, sourcePropertyInfo.GetValue(sourceObject));
             }
 
             return targetInstance;
