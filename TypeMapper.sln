@@ -9,13 +9,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "doc", "doc", "{F4097719-272
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.txt = LICENSE.txt
 		Readme.md = Readme.md
+		Spec_1__MapDefinition.md = Spec_1__MapDefinition.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeMapper", "src\TypeMapper\TypeMapper.csproj", "{CA86A3AF-F645-40F2-A41E-C8CF82CC3830}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypeMapper", "src\TypeMapper\TypeMapper.csproj", "{CA86A3AF-F645-40F2-A41E-C8CF82CC3830}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6455E468-75F2-402E-A82C-FDC665FBF122}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TypeMapper.Tests", "test\TypeMapper.Tests\TypeMapper.Tests.csproj", "{C4F89121-37B6-419C-B1A8-76FE124FAD09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TypeMapper.Tests", "test\TypeMapper.Tests\TypeMapper.Tests.csproj", "{C4F89121-37B6-419C-B1A8-76FE124FAD09}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

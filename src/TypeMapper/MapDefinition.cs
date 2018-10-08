@@ -1,13 +1,13 @@
 ﻿/* * * * * * * * * * * * * * * * * Copyright © 2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/7/2018 3:57:56 AM
+ *      Created Date: 10/8/2018 7:01:00 AM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/7/2018 3:57:56 AM
+ *      Changed Date: 10/8/2018 7:01:00 AM
  *      
- *     Since Version: v1.0.0-alpha
+ *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Mapper object do?
+ *     			      What does the TypeMapper.MapDefinition object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -42,14 +42,15 @@
 /// </summary>
 namespace TypeMapper
 {
-    public interface IMapper
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
+
+    public class MapDefinition
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="TTargetType"></typeparam>
-        /// <param name="sourceObject"></param>
-        /// <returns></returns>
-        TTargetType MapTo<TTargetType>(object sourceObject) where TTargetType : new();
+        public MapDefinition()
+        {
+        }
     }
 }

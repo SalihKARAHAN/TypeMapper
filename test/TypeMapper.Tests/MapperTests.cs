@@ -46,7 +46,7 @@ namespace TypeMapper.Tests
     using TypeMapper.Tests.DummyObjects;
 
     [TestClass]
-    public class MapperTest
+    public class MapperTests
     {
         [TestMethod]
         public void MapTypesWithIgnoreUnmapped()

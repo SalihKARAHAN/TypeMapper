@@ -1,14 +1,13 @@
 ﻿/* * * * * * * * * * * * * * * * * Copyright © 2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/7/2018 3:57:56 AM
+ *      Created Date: 10/8/2018 6:50:47 AM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/7/2018 3:57:56 AM
+ *      Changed Date: 10/8/2018 6:50:47 AM
  *      
- *     Since Version: v1.0.0-alpha
+ *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Mapper object do?
- *                    Which was created on demand? 
+ *                   MapperBuilder sınıfı tip haritalama işlemlerinizi kolaylaştıracak yöntemler sunar. Haritalanacak tiplerin ve bu tiplere ait özellik eşleştirmelerindeki kullanıcı isteklerinin alınabilmesi ve çalışma zamanında haritalama işlemi yapılırken kullanıcının belirttiği tanımlara göre tiplerin haritalanmasını sağlamak amacıyla oluşturuldu.
  *           License:
  *                   MIT License
  *                   
@@ -42,14 +41,30 @@
 /// </summary>
 namespace TypeMapper
 {
-    public interface IMapper
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MapperBuilder
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TTargetType"></typeparam>
-        /// <param name="sourceObject"></param>
-        /// <returns></returns>
-        TTargetType MapTo<TTargetType>(object sourceObject) where TTargetType : new();
+        public MapperBuilder()
+        {
+        }
+
+        public MapperBuilder DefineMapFor<TTargetType, TSourceType>()
+        {
+            return this;
+        }
+
+        public IMapper Build()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

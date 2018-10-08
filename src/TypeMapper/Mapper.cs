@@ -4,7 +4,7 @@
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Changed Date: 10/7/2018 3:57:56 AM
  *      
- *     Since Version: v1.0.0
+ *     Since Version: v1.0.0-alpha
  *      		
  *           Summary:
  *     			      What does the TypeMapper.Mapper object do?
