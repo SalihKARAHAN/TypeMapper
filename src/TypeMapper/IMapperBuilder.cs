@@ -1,13 +1,13 @@
 ﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/9/2018 10:54:39 PM
+ *      Created Date: 10/9/2018 10:38:59 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:54:39 PM
+ *      Changed Date: 10/9/2018 10:38:59 PM
  *      
  *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.MapDefinition object do?
+ *     			      What does the TypeMapper.IMapperBuilder object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -37,32 +37,39 @@
  *                    yyyy.mm.dd: <mail.address@provider.com>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+/// <summary>
+/// 
+/// </summary>
 namespace TypeMapper
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// 
     /// </summary>
-    [Serializable]
-    internal sealed class MapDefinition : IDisposable
+    public interface IMapperBuilder
     {
-
-        internal Type TargetType { get; set; }
-        internal Type SourceType { get; set; }
-        internal List<MapSpecification> Specifications { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TTargetType"></typeparam>
+        /// <typeparam name="TSourceType"></typeparam>
+        /// <returns></returns>
+        IMapperBuilder DefineMapFor<TTargetType, TSourceType>();
 
         /// <summary>
         /// 
         /// </summary>
-        internal MapDefinition()
-        {
-        }
+        /// <typeparam name="TTargetType"></typeparam>
+        /// <typeparam name="TSourceType"></typeparam>
+        /// <param name="specifications"></param>
+        /// <returns></returns>
+        IMapperBuilder DefineMapFor<TTargetType, TSourceType>(Action<MapSpecificationsDefinition<TTargetType, TSourceType>> specifications);
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        IMapper Build();
     }
 }

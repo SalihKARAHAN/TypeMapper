@@ -1,13 +1,13 @@
 ﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/9/2018 10:54:39 PM
+ *      Created Date: 10/9/2018 10:52:59 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:54:39 PM
+ *      Changed Date: 10/9/2018 10:52:59 PM
  *      
  *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.MapDefinition object do?
+ *     			      What does the TypeMapper.MapSpecificationsDefinition object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -45,19 +45,25 @@ namespace TypeMapper
     /// <summary>
     /// 
     /// </summary>
+    /// <typeparam name="TTargetType"></typeparam>
+    /// <typeparam name="TSourceType"></typeparam>
     [Serializable]
-    internal sealed class MapDefinition : IDisposable
+    public sealed class MapSpecificationsDefinition<TTargetType, TSourceType> : IMapSpecificationsDefinition<TTargetType, TSourceType>, IDisposable
     {
+        private readonly List<MapSpecification> _specification;
 
-        internal Type TargetType { get; set; }
-        internal Type SourceType { get; set; }
-        internal List<MapSpecification> Specifications { get; set; }
+        internal List<MapSpecification> Specifications => this._specification;
 
         /// <summary>
         /// 
         /// </summary>
-        internal MapDefinition()
+        internal MapSpecificationsDefinition()
         {
+        }
+
+        public IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Func<TTargetType, TPropertyType> target)
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose()

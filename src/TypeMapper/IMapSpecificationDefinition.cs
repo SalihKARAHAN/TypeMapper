@@ -1,13 +1,13 @@
 ﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/9/2018 10:54:39 PM
+ *      Created Date: 10/9/2018 11:50:34 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:54:39 PM
+ *      Changed Date: 10/9/2018 11:50:34 PM
  *      
  *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.MapDefinition object do?
+ *     			      What does the TypeMapper.IMapSpecificationDefinition object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -37,32 +37,23 @@
  *                    yyyy.mm.dd: <mail.address@provider.com>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+/// <summary>
+/// 
+/// </summary>
 namespace TypeMapper
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// 
     /// </summary>
-    [Serializable]
-    internal sealed class MapDefinition : IDisposable
+    public interface IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>
     {
-
-        internal Type TargetType { get; set; }
-        internal Type SourceType { get; set; }
-        internal List<MapSpecification> Specifications { get; set; }
-
         /// <summary>
         /// 
         /// </summary>
-        internal MapDefinition()
-        {
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
+        /// <typeparam name="TSourcePropertyType"></typeparam>
+        /// <param name="source"></param>
+        void Map(Func<TSourceType, TPropertyType> source);
     }
 }

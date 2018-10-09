@@ -48,13 +48,19 @@ namespace TypeMapper
     using System.Reflection;
 
 
-    public class Mapper : IMapper
+    /// <summary>
+    /// 
+    /// </summary>
+    [Serializable]
+    public sealed class Mapper : IMapper
     {
         private static readonly Dictionary<string, Dictionary<string, PropertyInfo>> _typeTreasures = new Dictionary<string, Dictionary<string, PropertyInfo>>();
 
-        public Mapper()
+        internal Mapper(MapDefinition[] mapDefinitions)
         {
+
         }
+
         public TTargetType MapTo<TTargetType>(object sourceObject)
            where TTargetType : new()
         {
@@ -76,6 +82,7 @@ namespace TypeMapper
 
             return targetInstance;
         }
+
         public TTargetType MapTov2<TTargetType>(object sourceObject)
           where TTargetType : new()
         {

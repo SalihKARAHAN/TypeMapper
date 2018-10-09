@@ -1,13 +1,13 @@
 ﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/9/2018 10:54:39 PM
+ *      Created Date: 10/9/2018 10:54:53 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:54:39 PM
+ *      Changed Date: 10/9/2018 10:54:53 PM
  *      
  *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.MapDefinition object do?
+ *     			      What does the TypeMapper.MapTable object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -40,29 +40,18 @@
 namespace TypeMapper
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// 
     /// </summary>
     [Serializable]
-    internal sealed class MapDefinition : IDisposable
+    internal sealed class MapTable
     {
-
-        internal Type TargetType { get; set; }
-        internal Type SourceType { get; set; }
-        internal List<MapSpecification> Specifications { get; set; }
-
         /// <summary>
         /// 
         /// </summary>
-        internal MapDefinition()
+        public MapTable()
         {
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
         }
     }
 }

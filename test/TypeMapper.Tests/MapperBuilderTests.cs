@@ -1,13 +1,13 @@
 ﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/9/2018 10:54:39 PM
+ *      Created Date: 10/9/2018 10:12:24 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:54:39 PM
+ *      Changed Date: 10/9/2018 10:12:24 PM
  *      
  *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.MapDefinition object do?
+ *     			      What does the TypeMapper.Tests.MapperBuilderTests object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -37,32 +37,43 @@
  *                    yyyy.mm.dd: <mail.address@provider.com>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace TypeMapper
+/// <summary>
+/// 
+/// </summary>
+namespace TypeMapper.Tests
 {
-    using System;
-    using System.Collections.Generic;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using TypeMapper.Tests.DummyObjects;
 
-    /// <summary>
-    /// 
-    /// </summary>
-    [Serializable]
-    internal sealed class MapDefinition : IDisposable
+    [TestClass]
+    public class MapperBuilderTests
     {
-
-        internal Type TargetType { get; set; }
-        internal Type SourceType { get; set; }
-        internal List<MapSpecification> Specifications { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        internal MapDefinition()
+        public MapperBuilderTests()
         {
         }
 
-        public void Dispose()
+        [TestMethod]
+        public void OnlyRun()
         {
-            throw new NotImplementedException();
+            IMapperBuilder mapperBuilder = new MapperBuilder();
+            //mapperBuilder.DefineMapFor<UserDto, LoginViewModel>(specifications =>
+            //{
+            //    specifications.For(target => target.Username).Map(source => source.Username);
+            //    specifications.For(target => target.Password).Map(source => source.Password.ToMd5());
+            //});
+            mapperBuilder.DefineMapFor<UserDto, LoginViewModel>();
+
+            LoginViewModel viewModel = new LoginViewModel
+            {
+                Username = "salih.karahan",
+                Password = "My$up3RSecRetP@s#w0rD"
+            };
+
+            IMapper mapper = mapperBuilder.Build();
+            UserDto mappedUserDto = mapper.MapTo<UserDto>(viewModel);
+
+            Assert.AreEqual(viewModel.Username, mappedUserDto.Username);
+            Assert.AreEqual(viewModel.Password.ToMd5(), mappedUserDto.Password);
         }
     }
 }

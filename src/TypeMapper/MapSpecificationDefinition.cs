@@ -1,13 +1,13 @@
 ﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/9/2018 10:54:39 PM
+ *      Created Date: 10/9/2018 10:54:29 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:54:39 PM
+ *      Changed Date: 10/9/2018 10:54:29 PM
  *      
  *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.MapDefinition object do?
+ *     			      What does the TypeMapper.MapSpecificationDefinition object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -40,29 +40,29 @@
 namespace TypeMapper
 {
     using System;
-    using System.Collections.Generic;
 
     /// <summary>
     /// 
     /// </summary>
     [Serializable]
-    internal sealed class MapDefinition : IDisposable
+    internal sealed class MapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> : IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>, IDisposable
     {
-
-        internal Type TargetType { get; set; }
-        internal Type SourceType { get; set; }
-        internal List<MapSpecification> Specifications { get; set; }
-
         /// <summary>
         /// 
         /// </summary>
-        internal MapDefinition()
+        public MapSpecificationDefinition()
         {
+        }
+
+        public void Map(Func<TSourceType, TPropertyType> source)
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose()
         {
             throw new NotImplementedException();
         }
+
     }
 }

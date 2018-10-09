@@ -1,13 +1,13 @@
 ﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/9/2018 10:54:39 PM
+ *      Created Date: 10/10/2018 12:37:46 AM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:54:39 PM
+ *      Changed Date: 10/10/2018 12:37:46 AM
  *      
  *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.MapDefinition object do?
+ *     			      What does the TypeMapper.Tests.DummyExtensions object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -37,32 +37,16 @@
  *                    yyyy.mm.dd: <mail.address@provider.com>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace TypeMapper
+namespace TypeMapper.Tests
 {
-    using System;
-    using System.Collections.Generic;
-
     /// <summary>
     /// 
     /// </summary>
-    [Serializable]
-    internal sealed class MapDefinition : IDisposable
+    public static class DummyExtensions
     {
-
-        internal Type TargetType { get; set; }
-        internal Type SourceType { get; set; }
-        internal List<MapSpecification> Specifications { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        internal MapDefinition()
+        public static string ToMd5(this string value)
         {
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
+            return string.Format("MD5:[{0}]", value);
         }
     }
 }
