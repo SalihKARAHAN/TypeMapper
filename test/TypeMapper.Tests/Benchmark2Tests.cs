@@ -48,13 +48,13 @@ namespace TypeMapper.Tests
     [TestClass]
     public class Benchmark2Tests
     {
-        private readonly Mapper _mapper;
+        private readonly IMapper _mapper;
         private readonly BenchmarkEntity _entity;
         private readonly AutoMapper.IMapper _autoMapper;
 
         public Benchmark2Tests()
         {
-            _mapper = new Mapper();
+            _mapper = new MapperBuilder().Build();
             _entity = new BenchmarkEntity
             {
                 Username = "salih.karahan",
@@ -84,7 +84,7 @@ namespace TypeMapper.Tests
         {
             for (int i = 0; i < 100000; i++)
             {
-                BenchmarkDto userDto = _mapper.MapTov2<BenchmarkDto>(_entity);
+                //BenchmarkDto userDto = _mapper.MapTov2<BenchmarkDto>(_entity);
             }
 
         }

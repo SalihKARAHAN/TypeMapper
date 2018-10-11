@@ -51,7 +51,7 @@ namespace TypeMapper.Tests
         [TestMethod]
         public void MapTypesWithIgnoreUnmapped()
         {
-            IMapper mapper = new Mapper();
+            IMapper mapper = new MapperBuilder().Build();
             LoginViewModel viewModel = new LoginViewModel
             {
                 Username = "salih.karahan",

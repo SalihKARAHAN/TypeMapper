@@ -73,7 +73,7 @@ namespace TypeMapper.Tests
             UserDto mappedUserDto = mapper.MapTo<UserDto>(viewModel);
 
             Assert.AreEqual(viewModel.Username, mappedUserDto.Username);
-            Assert.AreEqual(viewModel.Password.ToMd5(), mappedUserDto.Password);
+            Assert.AreEqual(viewModel.Password/*.ToMd5()*/, mappedUserDto.Password);
         }
     }
 }

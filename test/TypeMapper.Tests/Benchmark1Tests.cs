@@ -43,21 +43,18 @@
 namespace TypeMapper.Tests
 {
     using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
     using TypeMapper.Tests.DummyObjects;
 
     [TestClass]
     public class Benchmark1Tests
     {
-        private readonly Mapper _mapper;
+        private readonly IMapper _mapper;
         private readonly LoginViewModel _viewModel;
         private readonly AutoMapper.IMapper _autoMapper;
 
         public Benchmark1Tests()
         {
-            this._mapper = new Mapper();
+            this._mapper = new MapperBuilder().Build();
             this._viewModel = new LoginViewModel
             {
                 Username = "salih.karahan",
@@ -84,7 +81,7 @@ namespace TypeMapper.Tests
         {
             for (int i = 0; i < 100000; i++)
             {
-                UserDto userDto = this._mapper.MapTov2<UserDto>(this._viewModel);
+                //UserDto userDto = this._mapper.MapTov2<UserDto>(this._viewModel);
             }
 
         }

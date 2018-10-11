@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/9/2018 10:41:16 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:41:16 PM
+ *      Changed Date: 12/9/2018 01:36 AM
  *      
  *     Since Version: v1.0.0
  *      		
@@ -82,6 +82,8 @@ namespace TypeMapper
                         SourcePropertyInfo = sourcePropertyInfo,
                         AssignmentAction = this.AssignmentAction
                     };
+
+                    mapSpecifications.Add(defaultSpecification);
                 }
             }
 

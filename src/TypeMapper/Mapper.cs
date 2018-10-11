@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/7/2018 3:57:56 AM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/7/2018 3:57:56 AM
+ *      Changed Date: 12/9/2018 01:36 AM
  *      
  *     Since Version: v1.0.0-alpha
  *      		
@@ -43,9 +43,7 @@
 namespace TypeMapper
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
 
 
     /// <summary>
@@ -54,78 +52,49 @@ namespace TypeMapper
     [Serializable]
     public sealed class Mapper : IMapper
     {
-        private static readonly Dictionary<string, Dictionary<string, PropertyInfo>> _typeTreasures = new Dictionary<string, Dictionary<string, PropertyInfo>>();
+        private readonly MapTable _mapTable;
 
         internal Mapper(MapDefinition[] mapDefinitions)
         {
+            int mapDefinitionsCount = mapDefinitions.Length;
+            this._mapTable = new MapTable(ref mapDefinitionsCount);
+            for (int i = 0; i < mapDefinitionsCount; i++)
+            {
+                MapDefinition mapDefinition = mapDefinitions[i];
+                Map map = new Map
+                {
+                    Hash = this._mapTable.CreateIndex(mapDefinition.TargetType, mapDefinition.SourceType),
+                    Specifications = mapDefinition.Specifications.ToArray<MapSpecification>()
+                };
 
+                this._mapTable.AddMap(ref i, map);
+            }
         }
 
         public TTargetType MapTo<TTargetType>(object sourceObject)
            where TTargetType : new()
         {
-            TTargetType targetInstance = new TTargetType();
-            Type targetType = typeof(TTargetType);
-            PropertyInfo[] targetProperties = targetType.GetProperties();
-
-            Type sourceType = sourceObject.GetType();
-            //PropertyInfo[] sourceProperties = sourceType.GetProperty(;
-
-            foreach (PropertyInfo targetPropertyInfo in targetProperties)
+            TTargetType targetTypeInstance = new TTargetType();
+            Map map = this._mapTable.FindMap(typeof(TTargetType), sourceObject.GetType());
+            if (map != null)
             {
-                PropertyInfo sourcePropertyInfo = sourceType.GetProperty(targetPropertyInfo.Name);
-                if (sourcePropertyInfo != null)
+                int specCount = map.Specifications.Length;
+                for (int i = 0; i < specCount; i++)
                 {
-                    targetPropertyInfo.SetValue(targetInstance, sourcePropertyInfo.GetValue(sourceObject));
+                    MapSpecification mapSpecification = map.Specifications[i];
+                    mapSpecification.AssignmentAction(
+                        mapSpecification.TargetPropertyInfo
+                        , targetTypeInstance
+                        , mapSpecification.SourcePropertyInfo
+                        , sourceObject);
                 }
             }
-
-            return targetInstance;
-        }
-
-        public TTargetType MapTov2<TTargetType>(object sourceObject)
-          where TTargetType : new()
-        {
-            TTargetType targetInstance = new TTargetType();
-            Type targetType = typeof(TTargetType);
-            if (!Mapper._typeTreasures.ContainsKey(targetType.FullName))
+            else
             {
-                PropertyInfo[] targetProperties = targetType.GetProperties();
-                Dictionary<string, PropertyInfo> propertyMapOfType = new Dictionary<string, PropertyInfo>(targetProperties.Length);
-                foreach (PropertyInfo targetPropertyInfo in targetProperties)
-                {
-                    propertyMapOfType.Add(targetPropertyInfo.Name, targetPropertyInfo);
-                }
 
-                Mapper._typeTreasures.Add(targetType.FullName, propertyMapOfType);
             }
 
-            Type sourceType = sourceObject.GetType();
-            if (!Mapper._typeTreasures.ContainsKey(sourceType.FullName))
-            {
-                PropertyInfo[] sourceProperties = sourceType.GetProperties();
-                Dictionary<string, PropertyInfo> propertyMapOfType = new Dictionary<string, PropertyInfo>(sourceProperties.Length);
-                foreach (PropertyInfo sourcePropertyInfo in sourceProperties)
-                {
-                    propertyMapOfType.Add(sourcePropertyInfo.Name, sourcePropertyInfo);
-                }
-
-                Mapper._typeTreasures.Add(sourceType.FullName, propertyMapOfType);
-            }
-
-            Dictionary<string, PropertyInfo> targetNamePropertyPair = Mapper._typeTreasures[targetType.FullName];
-            Dictionary<string, PropertyInfo> sourceNamePropertyPair = Mapper._typeTreasures[sourceType.FullName];
-            string[] matchedKeys = targetNamePropertyPair.Keys.Where(targetKey => sourceNamePropertyPair.Keys.Any(sourceKey => targetKey.Equals(sourceKey))).ToArray();
-
-            for (int i = 0; i < matchedKeys.Length; i++)
-            {
-                string matchedKey = matchedKeys[i];
-                PropertyInfo sourcePropertyInfo = sourceNamePropertyPair[matchedKey];
-                PropertyInfo targetPropertyInfo = targetNamePropertyPair[matchedKey];
-                targetPropertyInfo.SetValue(targetInstance, sourcePropertyInfo.GetValue(sourceObject));
-            }
-
-            return targetInstance;
+            return targetTypeInstance;
         }
     }
 }
