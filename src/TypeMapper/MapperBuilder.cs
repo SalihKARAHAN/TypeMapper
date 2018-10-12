@@ -67,25 +67,9 @@ namespace TypeMapper
         {
             Type targetType = typeof(TTargetType);
             Type sourceType = typeof(TSourceType);
-            List<MapSpecification> mapSpecifications = new List<MapSpecification>();
-
+            
             // 1. default olarak ismi eşleşen tipleri bul
-            PropertyInfo[] targetPropertyInfos = targetType.GetProperties();
-            foreach (PropertyInfo targetPropertyInfo in targetPropertyInfos)
-            {
-                PropertyInfo sourcePropertyInfo = sourceType.GetProperty(targetPropertyInfo.Name);
-                if (sourcePropertyInfo != null)
-                {
-                    MapSpecification defaultSpecification = new MapSpecification
-                    {
-                        TargetPropertyInfo = targetPropertyInfo,
-                        SourcePropertyInfo = sourcePropertyInfo,
-                        AssignmentAction = this.AssignmentAction
-                    };
-
-                    mapSpecifications.Add(defaultSpecification);
-                }
-            }
+            List<MapSpecification> mapSpecifications = this.CreateDefaultAssignmentSpecifications(targetType, sourceType);
 
             // 2. specifications'ı invoke ederek kullanıcı tanımlarını al
             if (specifications != null)
@@ -104,6 +88,10 @@ namespace TypeMapper
             mapDefinition.SourceType = sourceType;
             mapDefinition.Specifications = mapSpecifications;
             this._definitions.Add(mapDefinition);
+            
+            // TODO@salih => Reverse mapping tanımlanmamış ise tip değrlerinin yerlerini değiştirerek reverse mapping automation yapılabilir!
+            // Yalnız revers'in reverse'ini oluşturmaya çalışmaması için bir kontrol eklenmeli.
+            // Bu işlem build olurken yapılmalı!
 
             return this;
         }
@@ -122,6 +110,29 @@ namespace TypeMapper
         internal void DefineMap(Type targetType, Type sourceType, Action<object, object> specifications)
         {
             throw new NotImplementedException();
+        }
+
+        private List<MapSpecification> CreateDefaultAssignmentSpecifications(Type targetType, Type sourceType)
+        {
+            List<MapSpecification> mapSpecifications = new List<MapSpecification>();
+            PropertyInfo[] targetPropertyInfos = targetType.GetProperties();
+            foreach (PropertyInfo targetPropertyInfo in targetPropertyInfos)
+            {
+                PropertyInfo sourcePropertyInfo = sourceType.GetProperty(targetPropertyInfo.Name);
+                if (sourcePropertyInfo != null)
+                {
+                    MapSpecification defaultSpecification = new MapSpecification
+                    {
+                        TargetPropertyInfo = targetPropertyInfo,
+                        SourcePropertyInfo = sourcePropertyInfo,
+                        AssignmentAction = this.AssignmentAction
+                    };
+
+                    mapSpecifications.Add(defaultSpecification);
+                }
+            }
+
+            return mapSpecifications;
         }
 
         private void AssignmentAction(PropertyInfo targetPropertyInfo, object targetObject, PropertyInfo sourcePropertyInfo, object sourceObject)
