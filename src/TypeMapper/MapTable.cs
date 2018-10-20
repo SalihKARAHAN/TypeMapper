@@ -74,7 +74,7 @@ namespace TypeMapper
         {
             string rawIndexContent = string.Format("{0}{1}{2}|{3}{4}{5}"
                 , targetType.Assembly.FullName, targetType.Assembly.ImageRuntimeVersion, targetType.FullName
-                , targetType.Assembly.FullName, targetType.Assembly.ImageRuntimeVersion, targetType.FullName);
+                , sourceType.Assembly.FullName, sourceType.Assembly.ImageRuntimeVersion, sourceType.FullName);
 
             string hash = this.CreateMD5Hash(rawIndexContent);
             return hash;
