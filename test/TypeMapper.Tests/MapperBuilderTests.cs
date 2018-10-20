@@ -75,5 +75,29 @@ namespace TypeMapper.Tests
             Assert.AreEqual(viewModel.Username, mappedUserDto.Username);
             Assert.AreEqual(viewModel.Password/*.ToMd5()*/, mappedUserDto.Password);
         }
+
+
+        [TestMethod]
+        public void OnlyRun2()
+        {
+            IMapperBuilder mapperBuilder = new MapperBuilder();
+            mapperBuilder.DefineMapFor<UserDto, LoginViewModel>(specifications =>
+            {
+                specifications.For(target => target.Username).Map(source => source.Username);
+                specifications.For(target => target.Password).Map(source => source.Password.ToMd5());
+            });
+
+            LoginViewModel viewModel = new LoginViewModel
+            {
+                Username = "salih.karahan",
+                Password = "My$up3RSecRetP@s#w0rD"
+            };
+
+            IMapper mapper = mapperBuilder.Build();
+            UserDto mappedUserDto = mapper.MapTo<UserDto>(viewModel);
+
+            Assert.AreEqual(viewModel.Username, mappedUserDto.Username);
+            Assert.AreEqual(viewModel.Password.ToMd5(), mappedUserDto.Password);
+        }
     }
 }

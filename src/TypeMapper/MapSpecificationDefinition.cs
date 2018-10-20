@@ -47,16 +47,24 @@ namespace TypeMapper
     [Serializable]
     internal sealed class MapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> : IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>, IDisposable
     {
+        private readonly MapSpecification _mapSpecification;
+
         /// <summary>
         /// 
         /// </summary>
-        public MapSpecificationDefinition()
+        public MapSpecificationDefinition(MapSpecification mapSpecification)
         {
+            this._mapSpecification = mapSpecification;
         }
 
         public void Map(Func<TSourceType, TPropertyType> source)
         {
-            throw new NotImplementedException();
+            this._mapSpecification.AssignmentAction = (targetPropertyInfo, targetObject, sourcePropertyInfo, sourceObject) =>
+            {
+                TSourceType typedSourceObject = (TSourceType)sourceObject;
+                TPropertyType value = source.Invoke(typedSourceObject);
+                targetPropertyInfo.SetValue(targetObject, value);
+            };
         }
 
         public void Dispose()

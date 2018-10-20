@@ -43,6 +43,7 @@
 namespace TypeMapper
 {
     using System;
+    using System.Linq.Expressions;
 
     /// <summary>
     /// 
@@ -55,6 +56,6 @@ namespace TypeMapper
         /// <typeparam name="TTargetPropertyType"></typeparam>
         /// <param name="target"></param>
         /// <returns></returns>
-        IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Func<TTargetType, TPropertyType> target);
+        IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Expression<Func<TTargetType, TPropertyType>> target);
     }
 }

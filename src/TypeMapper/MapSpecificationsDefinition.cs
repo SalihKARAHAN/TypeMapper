@@ -41,6 +41,8 @@ namespace TypeMapper
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Reflection;
 
     /// <summary>
     /// 
@@ -59,11 +61,17 @@ namespace TypeMapper
         /// </summary>
         internal MapSpecificationsDefinition()
         {
+            this._specification = new List<MapSpecification>();
         }
 
-        public IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Func<TTargetType, TPropertyType> target)
+        public IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Expression<Func<TTargetType, TPropertyType>> target)
         {
-            throw new NotImplementedException();
+            MapSpecification mapSpecification = new MapSpecification();
+            MemberExpression targetMemberExpression = (MemberExpression)target.Body;
+            mapSpecification.TargetPropertyInfo = (PropertyInfo)targetMemberExpression.Member;
+            IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> mapSpecificationDefinition = new MapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>(mapSpecification);
+            this._specification.Add(mapSpecification);
+            return mapSpecificationDefinition;
         }
 
         public void Dispose()

@@ -7,7 +7,7 @@
  *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Tests.DummyExtensions object do?
+ *     			      What does the DummyObjects.TypeMapper.Tests.DummyExtensions object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -37,7 +37,7 @@
  *                    yyyy.mm.dd: <mail.address@provider.com>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-namespace TypeMapper.Tests
+namespace TypeMapper.Tests.DummyObjects
 {
     /// <summary>
     /// 

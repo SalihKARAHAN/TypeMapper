@@ -67,7 +67,7 @@ namespace TypeMapper
         {
             Type targetType = typeof(TTargetType);
             Type sourceType = typeof(TSourceType);
-            
+
             // 1. default olarak ismi eşleşen tipleri bul
             List<MapSpecification> mapSpecifications = this.CreateDefaultAssignmentSpecifications(targetType, sourceType);
 
@@ -77,18 +77,32 @@ namespace TypeMapper
                 MapSpecificationsDefinition<TTargetType, TSourceType> specificationsDefinition = new MapSpecificationsDefinition<TTargetType, TSourceType>();
                 specifications(specificationsDefinition);
                 List<MapSpecification> userDefinedMapSpecifications = specificationsDefinition.Specifications;
+                int userDefinedMapSpecificationsCount = userDefinedMapSpecifications.Count;
+                for (int i = 0; i < userDefinedMapSpecificationsCount; i++)
+                {
+                    // 3. kullanıcı tanımları ile default eşleşme sonuçlarını karşılaştır 
+                    // 3. 1. target type'ın aynı property'sine kullanıcı tanımında atama yapılmış ise default atama yerine oradaki tanımı dikkate al
+                    // 3. 2. eşleşme sonuçlarından farklı bir target property'si için tanım yapılmış ise onu da specification'a ekle
+                    MapSpecification userDefinedMapSpecification = userDefinedMapSpecifications[i];
+                    int existSpecificationIndex = mapSpecifications.FindIndex(mapSpecification => mapSpecification.TargetPropertyInfo == userDefinedMapSpecification.TargetPropertyInfo);
+                    if (existSpecificationIndex != -1)
+                    {
+                        mapSpecifications.RemoveAt(existSpecificationIndex);
+                    }
+
+                    mapSpecifications.Add(userDefinedMapSpecification);
+                }
             }
 
-            // 3. kullanıcı tanımları ile default eşleşme sonuçlarını karşılaştır 
-            // 3. 1. target type'ın aynı property'sine kullanıcı tanımında atama yapılmış ise default atama yerine oradaki tanımı dikkate al
-            // 3. 2. eşleşme sonuçlarından farklı bir target property'si için tanım yapılmış ise onu da specification'a ekle
             // 4. Elde edilenlerle bir MapDefinition objesi oluştur ve map definition listesine ekle
-            MapDefinition mapDefinition = new MapDefinition();
-            mapDefinition.TargetType = targetType;
-            mapDefinition.SourceType = sourceType;
-            mapDefinition.Specifications = mapSpecifications;
+            MapDefinition mapDefinition = new MapDefinition
+            {
+                TargetType = targetType,
+                SourceType = sourceType,
+                Specifications = mapSpecifications
+            };
             this._definitions.Add(mapDefinition);
-            
+
             // TODO@salih => Reverse mapping tanımlanmamış ise tip değrlerinin yerlerini değiştirerek reverse mapping automation yapılabilir!
             // Yalnız revers'in reverse'ini oluşturmaya çalışmaması için bir kontrol eklenmeli.
             // Bu işlem build olurken yapılmalı!
@@ -137,6 +151,7 @@ namespace TypeMapper
 
         private void AssignmentAction(PropertyInfo targetPropertyInfo, object targetObject, PropertyInfo sourcePropertyInfo, object sourceObject)
         {
+            // TODO@salih => İki property'nin tipi aynı mı? Birbirine atanabilirler mi? Kontrol edilmeli!!!
             targetPropertyInfo.SetValue(targetObject, sourcePropertyInfo.GetValue(sourceObject));
         }
     }
