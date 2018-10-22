@@ -40,13 +40,16 @@
 namespace TypeMapper
 {
     using System;
+    using System.Diagnostics;
 
     /// <summary>
     /// 
     /// </summary>
     [Serializable]
+    [DebuggerStepThrough]
     internal sealed class MapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> : IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>, IDisposable
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly MapSpecification _mapSpecification;
 
         /// <summary>
@@ -57,6 +60,10 @@ namespace TypeMapper
             this._mapSpecification = mapSpecification;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
         public void Map(Func<TSourceType, TPropertyType> source)
         {
             this._mapSpecification.AssignmentAction = (targetPropertyInfo, targetObject, sourcePropertyInfo, sourceObject) =>

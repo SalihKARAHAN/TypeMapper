@@ -40,22 +40,30 @@
 namespace TypeMapper
 {
     using System;
+    using System.Diagnostics;
 
     /// <summary>
-    /// 
+    /// Bu sınıf hedef tipin oluşturulmasında kaynak tipten hangi değerlerin kendisindeki hangi özelliğe atanacağının bilgisini içerir.
     /// </summary>
     [Serializable]
+    [DebuggerStepThrough]
     internal sealed class Map
     {
-        internal string Hash { get; set; }
-        internal MapSpecification[] Specifications { get; set; }
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal string Hash { get; private set; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal MapSpecification[] Specifications { get; private set; }
 
         /// <summary>
         /// 
         /// </summary>
-
-        internal Map()
+        /// <param name="hash">is unique hash of types couple, that gets from <seealso cref="MapTable.CreateIndex(Type, Type)"/></param>
+        /// <param name="specifications"></param>
+        internal Map(string hash, MapSpecification[] specifications)
         {
+            this.Hash = hash;
+            this.Specifications = specifications;
         }
     }
 }

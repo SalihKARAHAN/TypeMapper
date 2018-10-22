@@ -43,6 +43,7 @@
 namespace TypeMapper
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
 
 
@@ -50,8 +51,11 @@ namespace TypeMapper
     /// 
     /// </summary>
     [Serializable]
+    [DebuggerDisplay("Mapper{}")]
+    [DebuggerStepThrough]
     public sealed class Mapper : IMapper
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly MapTable _mapTable;
 
         internal Mapper(MapDefinition[] mapDefinitions)
@@ -61,12 +65,9 @@ namespace TypeMapper
             for (int i = 0; i < mapDefinitionsCount; i++)
             {
                 MapDefinition mapDefinition = mapDefinitions[i];
-                Map map = new Map
-                {
-                    Hash = this._mapTable.CreateIndex(mapDefinition.TargetType, mapDefinition.SourceType),
-                    Specifications = mapDefinition.Specifications.ToArray<MapSpecification>()
-                };
-
+                string hash = this._mapTable.CreateIndex(mapDefinition.TargetType, mapDefinition.SourceType);
+                MapSpecification[] mapSpecifications = mapDefinition.Specifications.ToArray<MapSpecification>();
+                Map map = new Map(hash, mapSpecifications);
                 this._mapTable.AddMap(ref i, map);
             }
         }

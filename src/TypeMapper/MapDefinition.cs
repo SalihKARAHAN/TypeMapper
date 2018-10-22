@@ -41,16 +41,22 @@ namespace TypeMapper
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
 
     /// <summary>
-    /// 
+    /// This class provides ma
     /// </summary>
     [Serializable]
+    [DebuggerStepThrough]
     internal sealed class MapDefinition : IDisposable
     {
-
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal Type TargetType { get; set; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal Type SourceType { get; set; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal List<MapSpecification> Specifications { get; set; }
 
         /// <summary>

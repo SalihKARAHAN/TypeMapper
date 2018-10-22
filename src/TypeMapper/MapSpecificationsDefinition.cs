@@ -41,6 +41,7 @@ namespace TypeMapper
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq.Expressions;
     using System.Reflection;
 
@@ -50,8 +51,10 @@ namespace TypeMapper
     /// <typeparam name="TTargetType"></typeparam>
     /// <typeparam name="TSourceType"></typeparam>
     [Serializable]
+    [DebuggerStepThrough]
     public sealed class MapSpecificationsDefinition<TTargetType, TSourceType> : IMapSpecificationsDefinition<TTargetType, TSourceType>, IDisposable
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly List<MapSpecification> _specification;
 
         internal List<MapSpecification> Specifications => this._specification;
@@ -64,6 +67,12 @@ namespace TypeMapper
             this._specification = new List<MapSpecification>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TPropertyType"></typeparam>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Expression<Func<TTargetType, TPropertyType>> target)
         {
             MapSpecification mapSpecification = new MapSpecification();
@@ -74,6 +83,9 @@ namespace TypeMapper
             return mapSpecificationDefinition;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             throw new NotImplementedException();

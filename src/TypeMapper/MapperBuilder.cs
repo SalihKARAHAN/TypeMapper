@@ -41,28 +41,44 @@ namespace TypeMapper
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Reflection;
 
     /// <summary>
-    /// 
+    /// MapperBuilder helps you about of create a new mapper instance. <seealso cref="MapperBuilder.Build()"/>
+    /// Besides that, this class provides two methods for defining map<see cref="MapDefinition"/> of types couple.
     /// </summary>
     public sealed class MapperBuilder : IMapperBuilder, IDisposable
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly List<MapDefinition> _definitions;
 
         /// <summary>
-        /// 
+        /// Create a new MapperBuilder class instance.
         /// </summary>
         public MapperBuilder()
         {
             this._definitions = new List<MapDefinition>();
         }
 
+        /// <summary>
+        /// This method allows you to define a map. 
+        /// </summary>
+        /// <typeparam name="TTargetType">The target type is what you want to be mapped.</typeparam>
+        /// <typeparam name="TSourceType">The source type containing the source of data in the mapping.</typeparam>
+        /// <returns>Returns MapperBuilder instance for you can define again another type couple.</returns>
         public IMapperBuilder DefineMapFor<TTargetType, TSourceType>()
         {
             return this.DefineMapFor<TTargetType, TSourceType>(null);
         }
 
+        /// <summary>
+        /// This method allows you to define a map with specifications
+        /// </summary>
+        /// <typeparam name="TTargetType">The target type is what you want to be mapped.</typeparam>
+        /// <typeparam name="TSourceType">The source type containing the source of data in the mapping.</typeparam>
+        /// <param name="specifications"></param>
+        /// <returns></returns>
         public IMapperBuilder DefineMapFor<TTargetType, TSourceType>(Action<MapSpecificationsDefinition<TTargetType, TSourceType>> specifications)
         {
             Type targetType = typeof(TTargetType);
@@ -101,6 +117,7 @@ namespace TypeMapper
                 SourceType = sourceType,
                 Specifications = mapSpecifications
             };
+
             this._definitions.Add(mapDefinition);
 
             // TODO@salih => Reverse mapping tanımlanmamış ise tip değrlerinin yerlerini değiştirerek reverse mapping automation yapılabilir!
@@ -110,22 +127,30 @@ namespace TypeMapper
             return this;
         }
 
+        /// <summary>
+        /// This method provides you create a mapper instance
+        /// </summary>
+        /// <returns><see cref="IMapper"/></returns>
         public IMapper Build()
         {
             IMapper mapper = new Mapper(this._definitions.ToArray());
             return mapper;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             throw new NotImplementedException();
         }
 
-        internal void DefineMap(Type targetType, Type sourceType, Action<object, object> specifications)
-        {
-            throw new NotImplementedException();
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetType"></param>
+        /// <param name="sourceType"></param>
+        /// <returns></returns>
         private List<MapSpecification> CreateDefaultAssignmentSpecifications(Type targetType, Type sourceType)
         {
             List<MapSpecification> mapSpecifications = new List<MapSpecification>();
@@ -149,6 +174,13 @@ namespace TypeMapper
             return mapSpecifications;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetPropertyInfo"></param>
+        /// <param name="targetObject"></param>
+        /// <param name="sourcePropertyInfo"></param>
+        /// <param name="sourceObject"></param>
         private void AssignmentAction(PropertyInfo targetPropertyInfo, object targetObject, PropertyInfo sourcePropertyInfo, object sourceObject)
         {
             // TODO@salih => İki property'nin tipi aynı mı? Birbirine atanabilirler mi? Kontrol edilmeli!!!

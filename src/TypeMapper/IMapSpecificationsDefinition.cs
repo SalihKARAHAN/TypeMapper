@@ -53,7 +53,7 @@ namespace TypeMapper
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TTargetPropertyType"></typeparam>
+        /// <typeparam name="TPropertyType"></typeparam>
         /// <param name="target"></param>
         /// <returns></returns>
         IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Expression<Func<TTargetType, TPropertyType>> target);

@@ -40,6 +40,7 @@
 namespace TypeMapper
 {
     using System;
+    using System.Diagnostics;
     using System.Security.Cryptography;
     using System.Text;
 
@@ -47,11 +48,19 @@ namespace TypeMapper
     /// 
     /// </summary>
     [Serializable]
+    [DebuggerDisplay("MapTable{}")]
     internal sealed class MapTable
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly string[] _index;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Map[] _maps;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Encoding _utf8Encoding;
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly HashAlgorithm _md5HashAlgorithm;
 
         /// <summary>
@@ -65,11 +74,23 @@ namespace TypeMapper
             this._maps = new Map[mapSize];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TTargetType"></typeparam>
+        /// <typeparam name="TSourceType"></typeparam>
+        /// <returns></returns>
         internal string CreateIndex<TTargetType, TSourceType>()
         {
             return this.CreateIndex(typeof(TTargetType), typeof(TSourceType));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetType"></param>
+        /// <param name="sourceType"></param>
+        /// <returns></returns>
         internal string CreateIndex(Type targetType, Type sourceType)
         {
             string rawIndexContent = string.Format("{0}{1}{2}|{3}{4}{5}"
@@ -80,17 +101,34 @@ namespace TypeMapper
             return hash;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="map"></param>
         internal void AddMap(ref int index, Map map)
         {
             this._index[index] = map.Hash;
             this._maps[index] = map;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TTargetType"></typeparam>
+        /// <typeparam name="TSourceType"></typeparam>
+        /// <returns></returns>
         internal Map FindMap<TTargetType, TSourceType>()
         {
             return this.FindMap(typeof(TTargetType), typeof(TSourceType));
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="targetType"></param>
+        /// <param name="sourceType"></param>
+        /// <returns></returns>
         internal Map FindMap(Type targetType, Type sourceType)
         {
             string hash = this.CreateIndex(targetType, sourceType);
@@ -99,6 +137,11 @@ namespace TypeMapper
             return map;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         private string CreateMD5Hash(string text)
         {
             byte[] textBytes = this._utf8Encoding.GetBytes(text);

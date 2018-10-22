@@ -40,20 +40,26 @@
 namespace TypeMapper
 {
     using System;
+    using System.Diagnostics;
     using System.Reflection;
 
     /// <summary>
     /// 
     /// </summary>
     [Serializable]
+    [DebuggerStepThrough]
     internal sealed class MapSpecification : IDisposable
     {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal PropertyInfo TargetPropertyInfo { get; set; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal PropertyInfo SourcePropertyInfo { get; set; }
 
         /// <summary>
         /// PropertyInfo targetPropertyInfo, object targetObject, PropertyInfo sourcePropertyInfo, object sourceObject
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal Action<PropertyInfo, object, PropertyInfo, object> AssignmentAction { get; set; }
 
         /// <summary>
