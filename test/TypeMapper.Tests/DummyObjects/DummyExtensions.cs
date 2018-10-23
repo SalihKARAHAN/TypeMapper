@@ -1,13 +1,13 @@
-﻿/* * * * * * * * * * * * * * * * * Copyright © 2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/7/2018 4:03:21 AM
+ *      Created Date: 10/10/2018 12:37:46 AM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/7/2018 4:03:21 AM
+ *      Changed Date: 10/10/2018 12:37:46 AM
  *      
  *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Tests.MapperTest object do?
+ *     			      What does the DummyObjects.TypeMapper.Tests.DummyExtensions object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -37,33 +37,16 @@
  *                    yyyy.mm.dd: <mail.address@provider.com>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/// <summary>
-/// 
-/// </summary>
-namespace TypeMapper.Tests
+namespace TypeMapper.Tests.DummyObjects
 {
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using TypeMapper.Tests.DummyObjects;
-
-    [TestClass]
-    public class MapperTest
+    /// <summary>
+    /// 
+    /// </summary>
+    public static class DummyExtensions
     {
-        [TestMethod]
-        public void MapTypesWithIgnoreUnmapped()
+        public static string ToMd5(this string value)
         {
-            IMapper mapper = new Mapper();
-            LoginViewModel viewModel = new LoginViewModel
-            {
-                Username = "salih.karahan",
-                Password = "My$up3RSecRetP@s#w0rD"
-            };
-            UserDto userDto = mapper.MapTo<UserDto>(viewModel);
-            Assert.AreEqual(viewModel.Username, userDto.Username);
-            Assert.AreEqual(viewModel.Password, userDto.Password);
-            Assert.IsNull(userDto.Id);
-            Assert.IsNull(userDto.Fullname);
-            Assert.IsNull(userDto.Title);
-            Assert.IsNull(userDto.IsActive);
+            return string.Format("MD5:[{0}]", value);
         }
     }
 }

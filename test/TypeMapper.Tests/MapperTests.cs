@@ -1,13 +1,13 @@
 ﻿/* * * * * * * * * * * * * * * * * Copyright © 2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/7/2018 3:57:56 AM
+ *      Created Date: 10/7/2018 4:03:21 AM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 12/9/2018 01:36 AM
+ *      Changed Date: 10/7/2018 4:03:21 AM
  *      
- *     Since Version: v1.0.0-alpha
+ *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Mapper object do?
+ *     			      What does the TypeMapper.Tests.MapperTest object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -40,62 +40,30 @@
 /// <summary>
 /// 
 /// </summary>
-namespace TypeMapper
+namespace TypeMapper.Tests
 {
-    using System;
-    using System.Diagnostics;
-    using System.Linq;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using TypeMapper.Tests.DummyObjects;
 
-
-    /// <summary>
-    /// 
-    /// </summary>
-    [Serializable]
-    [DebuggerDisplay("Mapper{}")]
-    [DebuggerStepThrough]
-    public sealed class Mapper : IMapper
+    [TestClass]
+    public class MapperTests
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly MapTable _mapTable;
-
-        internal Mapper(MapDefinition[] mapDefinitions)
+        [TestMethod]
+        public void MapTypesWithIgnoreUnmapped()
         {
-            int mapDefinitionsCount = mapDefinitions.Length;
-            this._mapTable = new MapTable(ref mapDefinitionsCount);
-            for (int i = 0; i < mapDefinitionsCount; i++)
+            IMapper mapper = new MapperBuilder().Build();
+            LoginViewModel viewModel = new LoginViewModel
             {
-                MapDefinition mapDefinition = mapDefinitions[i];
-                string hash = this._mapTable.CreateIndex(mapDefinition.TargetType, mapDefinition.SourceType);
-                MapSpecification[] mapSpecifications = mapDefinition.Specifications.ToArray<MapSpecification>();
-                Map map = new Map(hash, mapSpecifications);
-                this._mapTable.AddMap(ref i, map);
-            }
-        }
-
-        public TTargetType MapTo<TTargetType>(object sourceObject)
-           where TTargetType : new()
-        {
-            TTargetType targetTypeInstance = new TTargetType();
-            Map map = this._mapTable.FindMap(typeof(TTargetType), sourceObject.GetType());
-            if (map != null)
-            {
-                int specCount = map.Specifications.Length;
-                for (int i = 0; i < specCount; i++)
-                {
-                    MapSpecification mapSpecification = map.Specifications[i];
-                    mapSpecification.AssignmentAction(
-                        mapSpecification.TargetPropertyInfo
-                        , targetTypeInstance
-                        , mapSpecification.SourcePropertyInfo
-                        , sourceObject);
-                }
-            }
-            else
-            {
-
-            }
-
-            return targetTypeInstance;
+                Username = "salih.karahan",
+                Password = "My$up3RSecRetP@s#w0rD"
+            };
+            UserDto userDto = mapper.MapTo<UserDto>(viewModel);
+            Assert.AreEqual(viewModel.Username, userDto.Username);
+            Assert.AreEqual(viewModel.Password, userDto.Password);
+            Assert.IsNull(userDto.Id);
+            Assert.IsNull(userDto.Fullname);
+            Assert.IsNull(userDto.Title);
+            Assert.IsNull(userDto.IsActive);
         }
     }
 }

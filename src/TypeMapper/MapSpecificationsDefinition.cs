@@ -1,13 +1,13 @@
-﻿/* * * * * * * * * * * * * * * * * Copyright © 2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/7/2018 3:57:56 AM
+ *      Created Date: 10/9/2018 10:52:59 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 12/9/2018 01:36 AM
+ *      Changed Date: 10/9/2018 10:52:59 PM
  *      
- *     Since Version: v1.0.0-alpha
+ *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Mapper object do?
+ *     			      What does the TypeMapper.MapSpecificationsDefinition object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -37,65 +37,58 @@
  *                    yyyy.mm.dd: <mail.address@provider.com>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/// <summary>
-/// 
-/// </summary>
 namespace TypeMapper
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
-
+    using System.Linq.Expressions;
+    using System.Reflection;
 
     /// <summary>
     /// 
     /// </summary>
+    /// <typeparam name="TTargetType"></typeparam>
+    /// <typeparam name="TSourceType"></typeparam>
     [Serializable]
-    [DebuggerDisplay("Mapper{}")]
     [DebuggerStepThrough]
-    public sealed class Mapper : IMapper
+    public sealed class MapSpecificationsDefinition<TTargetType, TSourceType> : IMapSpecificationsDefinition<TTargetType, TSourceType>, IDisposable
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly MapTable _mapTable;
+        private readonly List<MapSpecification> _specification;
 
-        internal Mapper(MapDefinition[] mapDefinitions)
+        internal List<MapSpecification> Specifications => this._specification;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        internal MapSpecificationsDefinition()
         {
-            int mapDefinitionsCount = mapDefinitions.Length;
-            this._mapTable = new MapTable(ref mapDefinitionsCount);
-            for (int i = 0; i < mapDefinitionsCount; i++)
-            {
-                MapDefinition mapDefinition = mapDefinitions[i];
-                string hash = this._mapTable.CreateIndex(mapDefinition.TargetType, mapDefinition.SourceType);
-                MapSpecification[] mapSpecifications = mapDefinition.Specifications.ToArray<MapSpecification>();
-                Map map = new Map(hash, mapSpecifications);
-                this._mapTable.AddMap(ref i, map);
-            }
+            this._specification = new List<MapSpecification>();
         }
 
-        public TTargetType MapTo<TTargetType>(object sourceObject)
-           where TTargetType : new()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TPropertyType"></typeparam>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Expression<Func<TTargetType, TPropertyType>> target)
         {
-            TTargetType targetTypeInstance = new TTargetType();
-            Map map = this._mapTable.FindMap(typeof(TTargetType), sourceObject.GetType());
-            if (map != null)
-            {
-                int specCount = map.Specifications.Length;
-                for (int i = 0; i < specCount; i++)
-                {
-                    MapSpecification mapSpecification = map.Specifications[i];
-                    mapSpecification.AssignmentAction(
-                        mapSpecification.TargetPropertyInfo
-                        , targetTypeInstance
-                        , mapSpecification.SourcePropertyInfo
-                        , sourceObject);
-                }
-            }
-            else
-            {
+            MapSpecification mapSpecification = new MapSpecification();
+            MemberExpression targetMemberExpression = (MemberExpression)target.Body;
+            mapSpecification.TargetPropertyInfo = (PropertyInfo)targetMemberExpression.Member;
+            IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> mapSpecificationDefinition = new MapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>(mapSpecification);
+            this._specification.Add(mapSpecification);
+            return mapSpecificationDefinition;
+        }
 
-            }
-
-            return targetTypeInstance;
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Dispose()
+        {
+            throw new NotImplementedException();
         }
     }
 }

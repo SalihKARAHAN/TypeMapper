@@ -1,13 +1,13 @@
-﻿/* * * * * * * * * * * * * * * * * Copyright © 2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/7/2018 3:57:56 AM
+ *      Created Date: 10/9/2018 10:54:29 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 12/9/2018 01:36 AM
+ *      Changed Date: 10/9/2018 10:54:29 PM
  *      
- *     Since Version: v1.0.0-alpha
+ *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Mapper object do?
+ *     			      What does the TypeMapper.MapSpecificationDefinition object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -37,65 +37,47 @@
  *                    yyyy.mm.dd: <mail.address@provider.com>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/// <summary>
-/// 
-/// </summary>
 namespace TypeMapper
 {
     using System;
     using System.Diagnostics;
-    using System.Linq;
-
 
     /// <summary>
     /// 
     /// </summary>
     [Serializable]
-    [DebuggerDisplay("Mapper{}")]
     [DebuggerStepThrough]
-    public sealed class Mapper : IMapper
+    internal sealed class MapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> : IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>, IDisposable
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly MapTable _mapTable;
+        private readonly MapSpecification _mapSpecification;
 
-        internal Mapper(MapDefinition[] mapDefinitions)
+        /// <summary>
+        /// 
+        /// </summary>
+        public MapSpecificationDefinition(MapSpecification mapSpecification)
         {
-            int mapDefinitionsCount = mapDefinitions.Length;
-            this._mapTable = new MapTable(ref mapDefinitionsCount);
-            for (int i = 0; i < mapDefinitionsCount; i++)
-            {
-                MapDefinition mapDefinition = mapDefinitions[i];
-                string hash = this._mapTable.CreateIndex(mapDefinition.TargetType, mapDefinition.SourceType);
-                MapSpecification[] mapSpecifications = mapDefinition.Specifications.ToArray<MapSpecification>();
-                Map map = new Map(hash, mapSpecifications);
-                this._mapTable.AddMap(ref i, map);
-            }
+            this._mapSpecification = mapSpecification;
         }
 
-        public TTargetType MapTo<TTargetType>(object sourceObject)
-           where TTargetType : new()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="source"></param>
+        public void Map(Func<TSourceType, TPropertyType> source)
         {
-            TTargetType targetTypeInstance = new TTargetType();
-            Map map = this._mapTable.FindMap(typeof(TTargetType), sourceObject.GetType());
-            if (map != null)
+            this._mapSpecification.AssignmentAction = (targetPropertyInfo, targetObject, sourcePropertyInfo, sourceObject) =>
             {
-                int specCount = map.Specifications.Length;
-                for (int i = 0; i < specCount; i++)
-                {
-                    MapSpecification mapSpecification = map.Specifications[i];
-                    mapSpecification.AssignmentAction(
-                        mapSpecification.TargetPropertyInfo
-                        , targetTypeInstance
-                        , mapSpecification.SourcePropertyInfo
-                        , sourceObject);
-                }
-            }
-            else
-            {
-
-            }
-
-            return targetTypeInstance;
+                TSourceType typedSourceObject = (TSourceType)sourceObject;
+                TPropertyType value = source.Invoke(typedSourceObject);
+                targetPropertyInfo.SetValue(targetObject, value);
+            };
         }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

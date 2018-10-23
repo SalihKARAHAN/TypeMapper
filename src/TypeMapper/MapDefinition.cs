@@ -1,13 +1,13 @@
-﻿/* * * * * * * * * * * * * * * * * Copyright © 2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/7/2018 3:57:56 AM
+ *      Created Date: 10/9/2018 10:54:39 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 12/9/2018 01:36 AM
+ *      Changed Date: 10/9/2018 10:54:39 PM
  *      
- *     Since Version: v1.0.0-alpha
+ *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Mapper object do?
+ *     			      What does the TypeMapper.MapDefinition object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -37,65 +37,38 @@
  *                    yyyy.mm.dd: <mail.address@provider.com>
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-/// <summary>
-/// 
-/// </summary>
 namespace TypeMapper
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
-
 
     /// <summary>
-    /// 
+    /// This class provides ma
     /// </summary>
     [Serializable]
-    [DebuggerDisplay("Mapper{}")]
     [DebuggerStepThrough]
-    public sealed class Mapper : IMapper
+    internal sealed class MapDefinition : IDisposable
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly MapTable _mapTable;
+        internal Type TargetType { get; set; }
 
-        internal Mapper(MapDefinition[] mapDefinitions)
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal Type SourceType { get; set; }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal List<MapSpecification> Specifications { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        internal MapDefinition()
         {
-            int mapDefinitionsCount = mapDefinitions.Length;
-            this._mapTable = new MapTable(ref mapDefinitionsCount);
-            for (int i = 0; i < mapDefinitionsCount; i++)
-            {
-                MapDefinition mapDefinition = mapDefinitions[i];
-                string hash = this._mapTable.CreateIndex(mapDefinition.TargetType, mapDefinition.SourceType);
-                MapSpecification[] mapSpecifications = mapDefinition.Specifications.ToArray<MapSpecification>();
-                Map map = new Map(hash, mapSpecifications);
-                this._mapTable.AddMap(ref i, map);
-            }
         }
 
-        public TTargetType MapTo<TTargetType>(object sourceObject)
-           where TTargetType : new()
+        public void Dispose()
         {
-            TTargetType targetTypeInstance = new TTargetType();
-            Map map = this._mapTable.FindMap(typeof(TTargetType), sourceObject.GetType());
-            if (map != null)
-            {
-                int specCount = map.Specifications.Length;
-                for (int i = 0; i < specCount; i++)
-                {
-                    MapSpecification mapSpecification = map.Specifications[i];
-                    mapSpecification.AssignmentAction(
-                        mapSpecification.TargetPropertyInfo
-                        , targetTypeInstance
-                        , mapSpecification.SourcePropertyInfo
-                        , sourceObject);
-                }
-            }
-            else
-            {
-
-            }
-
-            return targetTypeInstance;
+            throw new NotImplementedException();
         }
     }
 }

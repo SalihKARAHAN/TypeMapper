@@ -1,13 +1,13 @@
-﻿/* * * * * * * * * * * * * * * * * Copyright © 2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/7/2018 3:57:56 AM
+ *      Created Date: 10/9/2018 10:38:59 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/7/2018 3:57:56 AM
+ *      Changed Date: 10/9/2018 10:38:59 PM
  *      
- *     Since Version: v1.0.0-alpha
+ *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Mapper object do?
+ *     			      What does the TypeMapper.IMapperBuilder object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -42,14 +42,34 @@
 /// </summary>
 namespace TypeMapper
 {
-    public interface IMapper
+    using System;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IMapperBuilder
     {
         /// <summary>
         /// 
         /// </summary>
         /// <typeparam name="TTargetType"></typeparam>
-        /// <param name="sourceObject"></param>
+        /// <typeparam name="TSourceType"></typeparam>
         /// <returns></returns>
-        TTargetType MapTo<TTargetType>(object sourceObject) where TTargetType : new();
+        IMapperBuilder DefineMapFor<TTargetType, TSourceType>();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TTargetType"></typeparam>
+        /// <typeparam name="TSourceType"></typeparam>
+        /// <param name="specifications"></param>
+        /// <returns></returns>
+        IMapperBuilder DefineMapFor<TTargetType, TSourceType>(Action<MapSpecificationsDefinition<TTargetType, TSourceType>> specifications);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        IMapper Build();
     }
 }

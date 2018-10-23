@@ -1,13 +1,13 @@
-﻿/* * * * * * * * * * * * * * * * * Copyright © 2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/7/2018 3:57:56 AM
+ *      Created Date: 10/9/2018 11:49:16 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/7/2018 3:57:56 AM
+ *      Changed Date: 10/9/2018 11:49:16 PM
  *      
- *     Since Version: v1.0.0-alpha
+ *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Mapper object do?
+ *     			      What does the TypeMapper.IMapSpecificationsDefinition object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -42,14 +42,20 @@
 /// </summary>
 namespace TypeMapper
 {
-    public interface IMapper
+    using System;
+    using System.Linq.Expressions;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IMapSpecificationsDefinition<TTargetType, TSourceType>
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TTargetType"></typeparam>
-        /// <param name="sourceObject"></param>
+        /// <typeparam name="TPropertyType"></typeparam>
+        /// <param name="target"></param>
         /// <returns></returns>
-        TTargetType MapTo<TTargetType>(object sourceObject) where TTargetType : new();
+        IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Expression<Func<TTargetType, TPropertyType>> target);
     }
 }

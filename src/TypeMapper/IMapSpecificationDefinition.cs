@@ -1,13 +1,13 @@
-﻿/* * * * * * * * * * * * * * * * * Copyright © 2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * Copyright ©2018 Salih KARAHAN KARAHAN-LAB® Products * * * * * * * * * * * * * * * * * *
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Created Date: 10/7/2018 3:57:56 AM
+ *      Created Date: 10/9/2018 11:50:34 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/7/2018 3:57:56 AM
+ *      Changed Date: 10/9/2018 11:50:34 PM
  *      
- *     Since Version: v1.0.0-alpha
+ *     Since Version: v1.0.0
  *      		
  *           Summary:
- *     			      What does the TypeMapper.Mapper object do?
+ *     			      What does the TypeMapper.IMapSpecificationDefinition object do?
  *                    Which was created on demand? 
  *           License:
  *                   MIT License
@@ -42,14 +42,18 @@
 /// </summary>
 namespace TypeMapper
 {
-    public interface IMapper
+    using System;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public interface IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>
     {
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="TTargetType"></typeparam>
-        /// <param name="sourceObject"></param>
-        /// <returns></returns>
-        TTargetType MapTo<TTargetType>(object sourceObject) where TTargetType : new();
+        /// <typeparam name="TSourcePropertyType"></typeparam>
+        /// <param name="source"></param>
+        void Map(Func<TSourceType, TPropertyType> source);
     }
 }
