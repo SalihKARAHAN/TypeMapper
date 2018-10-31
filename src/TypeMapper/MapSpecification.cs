@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/9/2018 10:54:45 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 12/9/2018 01:36 AM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0
  *      		
@@ -40,26 +40,37 @@
 namespace TypeMapper
 {
     using System;
-    using System.Diagnostics;
     using System.Reflection;
+#if RELEASE
+    using System.Diagnostics;
+#endif
 
     /// <summary>
     /// 
     /// </summary>
     [Serializable]
+#if RELEASE
     [DebuggerStepThrough]
-    internal sealed class MapSpecification : IDisposable
+    [DebuggerDisplay("{this.TargetPropertyInfo.Name} -> {this.SourcePropertyInfo.Name}")]
+#endif
+    internal sealed class MapSpecification
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
         internal PropertyInfo TargetPropertyInfo { get; set; }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
         internal PropertyInfo SourcePropertyInfo { get; set; }
 
         /// <summary>
         /// PropertyInfo targetPropertyInfo, object targetObject, PropertyInfo sourcePropertyInfo, object sourceObject
         /// </summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
         internal Action<PropertyInfo, object, PropertyInfo, object> AssignmentAction { get; set; }
 
         /// <summary>
@@ -67,11 +78,6 @@ namespace TypeMapper
         /// </summary>
         internal MapSpecification()
         {
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
         }
     }
 }

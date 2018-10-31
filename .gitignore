@@ -1,5 +1,6 @@
 Specify filepatterns you want git to ignore.
 .vs
+.idea
 
 #Ignore files built by Visual Studio
 *.user

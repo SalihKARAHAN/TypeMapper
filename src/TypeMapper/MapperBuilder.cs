@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/9/2018 10:41:16 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 12/9/2018 01:36 AM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0
  *      		
@@ -41,16 +41,25 @@ namespace TypeMapper
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Reflection;
+#if RELEASE
+    using System.Diagnostics;
+#endif
 
     /// <summary>
     /// MapperBuilder helps you about of create a new mapper instance. <seealso cref="MapperBuilder.Build()"/>
     /// Besides that, this class provides two methods for defining map<see cref="MapDefinition"/> of types couple.
     /// </summary>
-    public sealed class MapperBuilder : IMapperBuilder, IDisposable
+    [Serializable]
+#if RELEASE
+    [DebuggerStepThrough]
+    [DebuggerDisplay("MapperBuilder{}")]
+#endif
+    public sealed class MapperBuilder : IMapperBuilder
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
         private readonly List<MapDefinition> _definitions;
 
         /// <summary>
@@ -62,7 +71,7 @@ namespace TypeMapper
         }
 
         /// <summary>
-        /// This method allows you to define a map. 
+        /// This method allows you to define a map with using default matching
         /// </summary>
         /// <typeparam name="TTargetType">The target type is what you want to be mapped.</typeparam>
         /// <typeparam name="TSourceType">The source type containing the source of data in the mapping.</typeparam>
@@ -73,57 +82,24 @@ namespace TypeMapper
         }
 
         /// <summary>
-        /// This method allows you to define a map with specifications
+        /// This method allows you to define a map with your specifications
         /// </summary>
         /// <typeparam name="TTargetType">The target type is what you want to be mapped.</typeparam>
         /// <typeparam name="TSourceType">The source type containing the source of data in the mapping.</typeparam>
-        /// <param name="specifications"></param>
-        /// <returns></returns>
-        public IMapperBuilder DefineMapFor<TTargetType, TSourceType>(Action<MapSpecificationsDefinition<TTargetType, TSourceType>> specifications)
+        /// <param name="specifications"><see cref="IMapSpecificationsDefinition{TTargetType, TSourceType}"/></param>
+        /// <returns>Returns MapperBuilder instance for you can define again another type couple.</returns>
+        public IMapperBuilder DefineMapFor<TTargetType, TSourceType>(Action<IMapSpecificationsDefinition<TTargetType, TSourceType>> specifications)
         {
             Type targetType = typeof(TTargetType);
             Type sourceType = typeof(TSourceType);
-
-            // 1. default olarak ismi eşleşen tipleri bul
             List<MapSpecification> mapSpecifications = this.CreateDefaultAssignmentSpecifications(targetType, sourceType);
-
-            // 2. specifications'ı invoke ederek kullanıcı tanımlarını al
             if (specifications != null)
             {
-                MapSpecificationsDefinition<TTargetType, TSourceType> specificationsDefinition = new MapSpecificationsDefinition<TTargetType, TSourceType>();
-                specifications(specificationsDefinition);
-                List<MapSpecification> userDefinedMapSpecifications = specificationsDefinition.Specifications;
-                int userDefinedMapSpecificationsCount = userDefinedMapSpecifications.Count;
-                for (int i = 0; i < userDefinedMapSpecificationsCount; i++)
-                {
-                    // 3. kullanıcı tanımları ile default eşleşme sonuçlarını karşılaştır 
-                    // 3. 1. target type'ın aynı property'sine kullanıcı tanımında atama yapılmış ise default atama yerine oradaki tanımı dikkate al
-                    // 3. 2. eşleşme sonuçlarından farklı bir target property'si için tanım yapılmış ise onu da specification'a ekle
-                    MapSpecification userDefinedMapSpecification = userDefinedMapSpecifications[i];
-                    int existSpecificationIndex = mapSpecifications.FindIndex(mapSpecification => mapSpecification.TargetPropertyInfo == userDefinedMapSpecification.TargetPropertyInfo);
-                    if (existSpecificationIndex != -1)
-                    {
-                        mapSpecifications.RemoveAt(existSpecificationIndex);
-                    }
-
-                    mapSpecifications.Add(userDefinedMapSpecification);
-                }
+                this.HandleUserDefinedSpecifications(specifications, mapSpecifications);
             }
 
-            // 4. Elde edilenlerle bir MapDefinition objesi oluştur ve map definition listesine ekle
-            MapDefinition mapDefinition = new MapDefinition
-            {
-                TargetType = targetType,
-                SourceType = sourceType,
-                Specifications = mapSpecifications
-            };
-
+            MapDefinition mapDefinition = new MapDefinition(targetType, sourceType, mapSpecifications);
             this._definitions.Add(mapDefinition);
-
-            // TODO@salih => Reverse mapping tanımlanmamış ise tip değrlerinin yerlerini değiştirerek reverse mapping automation yapılabilir!
-            // Yalnız revers'in reverse'ini oluşturmaya çalışmaması için bir kontrol eklenmeli.
-            // Bu işlem build olurken yapılmalı!
-
             return this;
         }
 
@@ -138,38 +114,8 @@ namespace TypeMapper
             return mapper;
         }
 
-        private void DefineUndefinedReverseMaps()
-        {
-            List<MapDefinition> reverseMapDefinitionList = new List<MapDefinition>();
-            int definedMapCount = this._definitions.Count;
-            for (int i = 0; i < definedMapCount; i++)
-            {
-                MapDefinition mapDefinition = this._definitions[i];
-                MapDefinition reverseMapDefinition = this._definitions.Find(definition
-                    => definition.TargetType == mapDefinition.SourceType
-                    && definition.SourceType == mapDefinition.TargetType
-                );
-
-                if (reverseMapDefinition == null)
-                {
-                    List<MapSpecification> defaultSpecificationsOfReverseMap = this.CreateDefaultAssignmentSpecifications(mapDefinition.SourceType, mapDefinition.TargetType);
-                    reverseMapDefinition = new MapDefinition(mapDefinition.SourceType, mapDefinition.TargetType, defaultSpecificationsOfReverseMap);
-                    reverseMapDefinitionList.Add(reverseMapDefinition);
-                }
-            }
-
-            this._definitions.AddRange(reverseMapDefinitionList);
-        }
         /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
+        /// This method creates default specifications for defined type couple according to name conversion
         /// </summary>
         /// <param name="targetType"></param>
         /// <param name="sourceType"></param>
@@ -195,6 +141,59 @@ namespace TypeMapper
             }
 
             return mapSpecifications;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TTargetType"></typeparam>
+        /// <typeparam name="TSourceType"></typeparam>
+        /// <param name="specifications"></param>
+        /// <param name="mapSpecifications"></param>
+        private void HandleUserDefinedSpecifications<TTargetType, TSourceType>(Action<MapSpecificationsDefinition<TTargetType, TSourceType>> specifications, List<MapSpecification> mapSpecifications)
+        {
+            MapSpecificationsDefinition<TTargetType, TSourceType> specificationsDefinition = new MapSpecificationsDefinition<TTargetType, TSourceType>();
+            specifications(specificationsDefinition);
+            List<MapSpecification> userDefinedMapSpecifications = specificationsDefinition.Specifications;
+            int userDefinedMapSpecificationsCount = userDefinedMapSpecifications.Count;
+            for (int i = 0; i < userDefinedMapSpecificationsCount; i++)
+            {
+                MapSpecification userDefinedMapSpecification = userDefinedMapSpecifications[i];
+                int existSpecificationIndex = mapSpecifications.FindIndex(mapSpecification
+                    => mapSpecification.TargetPropertyInfo == userDefinedMapSpecification.TargetPropertyInfo);
+                if (existSpecificationIndex != -1)
+                {
+                    mapSpecifications.RemoveAt(existSpecificationIndex);
+                }
+
+                mapSpecifications.Add(userDefinedMapSpecification);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void DefineUndefinedReverseMaps()
+        {
+            List<MapDefinition> reverseMapDefinitionList = new List<MapDefinition>();
+            int definedMapCount = this._definitions.Count;
+            for (int i = 0; i < definedMapCount; i++)
+            {
+                MapDefinition mapDefinition = this._definitions[i];
+                MapDefinition reverseMapDefinition = this._definitions.Find(definition
+                    => definition.TargetType == mapDefinition.SourceType
+                    && definition.SourceType == mapDefinition.TargetType
+                );
+
+                if (reverseMapDefinition == null)
+                {
+                    List<MapSpecification> defaultSpecificationsOfReverseMap = this.CreateDefaultAssignmentSpecifications(mapDefinition.SourceType, mapDefinition.TargetType);
+                    reverseMapDefinition = new MapDefinition(mapDefinition.SourceType, mapDefinition.TargetType, defaultSpecificationsOfReverseMap);
+                    reverseMapDefinitionList.Add(reverseMapDefinition);
+                }
+            }
+
+            this._definitions.AddRange(reverseMapDefinitionList);
         }
 
         /// <summary>

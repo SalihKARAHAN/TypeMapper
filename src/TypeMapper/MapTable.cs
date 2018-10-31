@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/9/2018 10:54:53 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 12/9/2018 01:36 AM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0
  *      		
@@ -40,27 +40,41 @@
 namespace TypeMapper
 {
     using System;
-    using System.Diagnostics;
     using System.Security.Cryptography;
     using System.Text;
+#if RELEASE
+    using System.Diagnostics;
+#endif
 
     /// <summary>
     /// 
     /// </summary>
     [Serializable]
-    [DebuggerDisplay("MapTable{}")]
+#if RELEASE
+    [DebuggerStepThrough]
+    [DebuggerDisplay("Size: {this._index.Length}")]
+#endif
     internal sealed class MapTable
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
         private readonly string[] _index;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+
+#if RELEASE
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+#endif
         private readonly Map[] _maps;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
         private readonly Encoding _utf8Encoding;
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
         private readonly HashAlgorithm _md5HashAlgorithm;
 
         /// <summary>
@@ -155,6 +169,5 @@ namespace TypeMapper
 
             return hashBuilder.ToString();
         }
-
     }
 }
