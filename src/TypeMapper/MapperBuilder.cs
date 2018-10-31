@@ -133,10 +133,33 @@ namespace TypeMapper
         /// <returns><see cref="IMapper"/></returns>
         public IMapper Build()
         {
+            this.DefineUndefinedReverseMaps();
             IMapper mapper = new Mapper(this._definitions.ToArray());
             return mapper;
         }
 
+        private void DefineUndefinedReverseMaps()
+        {
+            List<MapDefinition> reverseMapDefinitionList = new List<MapDefinition>();
+            int definedMapCount = this._definitions.Count;
+            for (int i = 0; i < definedMapCount; i++)
+            {
+                MapDefinition mapDefinition = this._definitions[i];
+                MapDefinition reverseMapDefinition = this._definitions.Find(definition
+                    => definition.TargetType == mapDefinition.SourceType
+                    && definition.SourceType == mapDefinition.TargetType
+                );
+
+                if (reverseMapDefinition == null)
+                {
+                    List<MapSpecification> defaultSpecificationsOfReverseMap = this.CreateDefaultAssignmentSpecifications(mapDefinition.SourceType, mapDefinition.TargetType);
+                    reverseMapDefinition = new MapDefinition(mapDefinition.SourceType, mapDefinition.TargetType, defaultSpecificationsOfReverseMap);
+                    reverseMapDefinitionList.Add(reverseMapDefinition);
+                }
+            }
+
+            this._definitions.AddRange(reverseMapDefinitionList);
+        }
         /// <summary>
         /// 
         /// </summary>
