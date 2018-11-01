@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/9/2018 10:54:29 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:54:29 PM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0
  *      		
@@ -40,16 +40,22 @@
 namespace TypeMapper
 {
     using System;
+#if RELEASE
     using System.Diagnostics;
-
+#endif
     /// <summary>
-    /// 
+    /// This interface includes the <see cref="IMapSpecificationsDefinition{TTargetType, TSourceType}.For{TPropertyType}(System.Linq.Expressions.Expression{System.Func{TTargetType, TPropertyType}})"/> method
     /// </summary>
     [Serializable]
+#if RELEASE
     [DebuggerStepThrough]
-    internal sealed class MapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> : IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>, IDisposable
+    [DebuggerDisplay("MapSpecificationDefinition{}")]
+#endif
+    internal sealed class MapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> : IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
         private readonly MapSpecification _mapSpecification;
 
         /// <summary>
@@ -61,9 +67,10 @@ namespace TypeMapper
         }
 
         /// <summary>
-        /// 
+        /// This method allows you to define a function, that function uses in mapping process when getting value on a
+        /// source object of the <typeparamref name="TSourceType"/>
         /// </summary>
-        /// <param name="source"></param>
+        /// <param name="source">The <seealso cref="Func{TSourceType, TPropertyType}"/></param>
         public void Map(Func<TSourceType, TPropertyType> source)
         {
             this._mapSpecification.AssignmentAction = (targetPropertyInfo, targetObject, sourcePropertyInfo, sourceObject) =>
@@ -73,11 +80,5 @@ namespace TypeMapper
                 targetPropertyInfo.SetValue(targetObject, value);
             };
         }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

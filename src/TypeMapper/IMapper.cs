@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/7/2018 3:57:56 AM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/7/2018 3:57:56 AM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0-alpha
  *      		
@@ -42,14 +42,19 @@
 /// </summary>
 namespace TypeMapper
 {
+    /// <summary>
+    /// This interface provides you can access to <see cref="IMapper.MapTo{TTargetType}(object)"/> method
+    /// </summary>
     public interface IMapper
     {
         /// <summary>
-        /// 
+        /// This method converts your <paramref name="sourceObject"/> to a new instance of <typeparamref name="TTargetType"/>
+        /// according to defined by you or default mapping specifications. The default mapping specifications  are created 
+        /// by the name similarity of properties in these types.
         /// </summary>
         /// <typeparam name="TTargetType"></typeparam>
         /// <param name="sourceObject"></param>
-        /// <returns></returns>
+        /// <returns>An instance of <typeparamref name="TTargetType"/></returns>
         TTargetType MapTo<TTargetType>(object sourceObject) where TTargetType : new();
     }
 }

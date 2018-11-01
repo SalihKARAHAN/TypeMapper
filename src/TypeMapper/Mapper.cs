@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/7/2018 3:57:56 AM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 12/9/2018 01:36 AM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0-alpha
  *      		
@@ -43,19 +43,26 @@
 namespace TypeMapper
 {
     using System;
-    using System.Diagnostics;
     using System.Linq;
+    using System.Reflection;
+#if RELEASE
+    using System.Diagnostics;
+#endif
 
 
     /// <summary>
-    /// 
+    /// This class provides you can access to an implementation of the <see cref="IMapper.MapTo{TTargetType}(object)"/> method
     /// </summary>
     [Serializable]
-    [DebuggerDisplay("Mapper{}")]
+#if RELEASE
     [DebuggerStepThrough]
+    [DebuggerDisplay("Mapper")]
+#endif
     public sealed class Mapper : IMapper
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+#endif
         private readonly MapTable _mapTable;
 
         internal Mapper(MapDefinition[] mapDefinitions)
@@ -72,6 +79,14 @@ namespace TypeMapper
             }
         }
 
+        /// <summary>
+        /// This method converts your <paramref name="sourceObject"/> to a new instance of <typeparamref name="TTargetType"/>
+        /// according to defined by you or default mapping specifications. The default mapping specifications  are created 
+        /// by the name similarity of properties in these types.
+        /// </summary>
+        /// <typeparam name="TTargetType"></typeparam>
+        /// <param name="sourceObject"></param>
+        /// <returns>An instance of <typeparamref name="TTargetType"/></returns>
         public TTargetType MapTo<TTargetType>(object sourceObject)
            where TTargetType : new()
         {
@@ -92,7 +107,16 @@ namespace TypeMapper
             }
             else
             {
-
+                PropertyInfo[] targetProperties = typeof(TTargetType).GetProperties();
+                Type sourceType = sourceObject.GetType();
+                foreach (PropertyInfo targetPropertyInfo in targetProperties)
+                {
+                    PropertyInfo sourcePropertyInfo = sourceType.GetProperty(targetPropertyInfo.Name);
+                    if (sourcePropertyInfo != null)
+                    {
+                        targetPropertyInfo.SetValue(targetTypeInstance, sourcePropertyInfo.GetValue(sourceObject));
+                    }
+                }
             }
 
             return targetTypeInstance;

@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/9/2018 10:52:59 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:52:59 PM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0
  *      		
@@ -41,23 +41,30 @@ namespace TypeMapper
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq.Expressions;
     using System.Reflection;
+#if RELEASE
+    using System.Diagnostics;
+#endif
 
     /// <summary>
-    /// 
+    /// This interface allows you define mapping specification for which property of <typeparamref name="TTargetType"/>
     /// </summary>
-    /// <typeparam name="TTargetType"></typeparam>
-    /// <typeparam name="TSourceType"></typeparam>
+    /// <typeparam name="TTargetType">Target type</typeparam>
+    /// <typeparam name="TSourceType">Source type</typeparam>
     [Serializable]
+#if RELEASE
     [DebuggerStepThrough]
-    public sealed class MapSpecificationsDefinition<TTargetType, TSourceType> : IMapSpecificationsDefinition<TTargetType, TSourceType>, IDisposable
+    [DebuggerDisplay("MapSpecificationsDefinition{}")]
+#endif
+    public sealed class MapSpecificationsDefinition<TTargetType, TSourceType> : IMapSpecificationsDefinition<TTargetType, TSourceType>
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
         private readonly List<MapSpecification> _specification;
 
-        internal List<MapSpecification> Specifications => this._specification;
+        internal List<MapSpecification> Specifications { get { return this._specification;  } }
 
         /// <summary>
         /// 
@@ -68,11 +75,11 @@ namespace TypeMapper
         }
 
         /// <summary>
-        /// 
+        /// Prepare specification for <typeparamref name="TPropertyType"/> of <typeparamref name="TTargetType"/>
         /// </summary>
         /// <typeparam name="TPropertyType"></typeparam>
         /// <param name="target"></param>
-        /// <returns></returns>
+        /// <returns><see cref="IMapSpecificationDefinition{TTargetType, TSourceType, TPropertyType}"/></returns>
         public IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Expression<Func<TTargetType, TPropertyType>> target)
         {
             MapSpecification mapSpecification = new MapSpecification();
@@ -81,14 +88,6 @@ namespace TypeMapper
             IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> mapSpecificationDefinition = new MapSpecificationDefinition<TTargetType, TSourceType, TPropertyType>(mapSpecification);
             this._specification.Add(mapSpecification);
             return mapSpecificationDefinition;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Dispose()
-        {
-            throw new NotImplementedException();
         }
     }
 }

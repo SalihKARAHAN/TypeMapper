@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/9/2018 10:54:39 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 10:54:39 PM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0
  *      		
@@ -41,34 +41,42 @@ namespace TypeMapper
 {
     using System;
     using System.Collections.Generic;
+#if RELEASE
     using System.Diagnostics;
+#endif
 
     /// <summary>
     /// This class provides ma
     /// </summary>
     [Serializable]
-    [DebuggerStepThrough]
-    internal sealed class MapDefinition : IDisposable
+#if RELEASE
+    [DebuggerStepThrough] 
+#endif
+    internal sealed class MapDefinition
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal Type TargetType { get; set; }
+#if RELEASE
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
+        internal Type TargetType { get; private set; }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal Type SourceType { get; set; }
+#if RELEASE
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
+        internal Type SourceType { get; private set; }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        internal List<MapSpecification> Specifications { get; set; }
+#if RELEASE
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
+        internal List<MapSpecification> Specifications { get; private set; }
 
         /// <summary>
         /// 
         /// </summary>
-        internal MapDefinition()
+        internal MapDefinition(Type targetType, Type sourceType, List<MapSpecification> specifications)
         {
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
+            this.TargetType = targetType;
+            this.SourceType = sourceType;
+            this.Specifications = specifications;
         }
     }
 }

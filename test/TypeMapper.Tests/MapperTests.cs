@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/7/2018 4:03:21 AM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/7/2018 4:03:21 AM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0
  *      		
@@ -49,21 +49,108 @@ namespace TypeMapper.Tests
     public class MapperTests
     {
         [TestMethod]
-        public void MapTypesWithIgnoreUnmapped()
+        public void TestDefaultMappingOnOneTypeCouple()
         {
-            IMapper mapper = new MapperBuilder().Build();
+            IMapperBuilder mapperBuilder = new MapperBuilder();
+            mapperBuilder.DefineMapFor<UserDto, LoginViewModel>();
+
             LoginViewModel viewModel = new LoginViewModel
             {
                 Username = "salih.karahan",
                 Password = "My$up3RSecRetP@s#w0rD"
             };
-            UserDto userDto = mapper.MapTo<UserDto>(viewModel);
-            Assert.AreEqual(viewModel.Username, userDto.Username);
-            Assert.AreEqual(viewModel.Password, userDto.Password);
-            Assert.IsNull(userDto.Id);
-            Assert.IsNull(userDto.Fullname);
-            Assert.IsNull(userDto.Title);
-            Assert.IsNull(userDto.IsActive);
+
+            IMapper mapper = mapperBuilder.Build();
+            UserDto mappedUserDto = mapper.MapTo<UserDto>(viewModel);
+
+            Assert.AreEqual("salih.karahan", mappedUserDto.Username);
+            Assert.AreEqual("My$up3RSecRetP@s#w0rD", mappedUserDto.Password);
+        }
+
+        [TestMethod]
+        public void TestMappingWithSpecificationsOnOneTypeCouple()
+        {
+            IMapperBuilder mapperBuilder = new MapperBuilder();
+            mapperBuilder.DefineMapFor<UserDto, LoginViewModel>(specifications =>
+            {
+                specifications.For(target => target.Username).Map(source => source.Username);
+                specifications.For(target => target.Password).Map(source => source.Password.ToMd5());
+            });
+
+            LoginViewModel viewModel = new LoginViewModel
+            {
+                Username = "salih.karahan",
+                Password = "My$up3RSecRetP@s#w0rD"
+            };
+
+            IMapper mapper = mapperBuilder.Build();
+            UserDto mappedUserDto = mapper.MapTo<UserDto>(viewModel);
+
+            Assert.AreEqual("salih.karahan", mappedUserDto.Username);
+            Assert.AreEqual("MD5:[My$up3RSecRetP@s#w0rD]", mappedUserDto.Password);
+        }
+
+        [TestMethod]
+        public void TestDefaultReverseMappingOnOneTypeCouple()
+        {
+            IMapperBuilder mapperBuilder = new MapperBuilder();
+            mapperBuilder.DefineMapFor<UserDto, LoginViewModel>();
+
+            LoginViewModel viewModel = new LoginViewModel
+            {
+                Username = "salih.karahan",
+                Password = "My$up3RSecRetP@s#w0rD"
+            };
+
+            IMapper mapper = mapperBuilder.Build();
+            UserDto mappedUserDto = mapper.MapTo<UserDto>(viewModel);
+
+            Assert.AreEqual("salih.karahan", mappedUserDto.Username);
+            Assert.AreEqual("My$up3RSecRetP@s#w0rD", mappedUserDto.Password);
+
+            LoginViewModel mappedLoginViewModel = mapper.MapTo<LoginViewModel>(mappedUserDto);
+
+            Assert.AreEqual("salih.karahan", mappedLoginViewModel.Username);
+            Assert.AreEqual("My$up3RSecRetP@s#w0rD", mappedLoginViewModel.Password);
+        }
+
+        [TestMethod]
+        public void TestReverseMappingWithSpecificationsOnOneTypeCouple()
+        {
+            IMapperBuilder mapperBuilder = new MapperBuilder();
+            mapperBuilder.DefineMapFor<UserDto, LoginViewModel>(specifications =>
+            {
+                specifications.For(target => target.Username).Map(source => source.Username);
+                specifications.For(target => target.Password).Map(source => source.Password.ToMd5());
+            });
+
+            LoginViewModel viewModel = new LoginViewModel
+            {
+                Username = "salih.karahan",
+                Password = "My$up3RSecRetP@s#w0rD"
+            };
+
+            IMapper mapper = mapperBuilder.Build();
+            UserDto mappedUserDto = mapper.MapTo<UserDto>(viewModel);
+
+            Assert.AreEqual("salih.karahan", mappedUserDto.Username);
+            Assert.AreEqual("MD5:[My$up3RSecRetP@s#w0rD]", mappedUserDto.Password);
+
+            LoginViewModel mappedLoginViewModel = mapper.MapTo<LoginViewModel>(mappedUserDto);
+
+            Assert.AreEqual("salih.karahan", mappedLoginViewModel.Username);
+            Assert.AreEqual("MD5:[My$up3RSecRetP@s#w0rD]", mappedLoginViewModel.Password);
+
+            UserDto userDto = new UserDto
+            {
+                Username = "salih.karahan",
+                Password = "My$up3RSecRetP@s#w0rD"
+            };
+
+            LoginViewModel mappedLoginViewModel2 = mapper.MapTo<LoginViewModel>(userDto);
+
+            Assert.AreEqual("salih.karahan", mappedLoginViewModel2.Username);
+            Assert.AreEqual("My$up3RSecRetP@s#w0rD", mappedLoginViewModel2.Password);
         }
     }
 }

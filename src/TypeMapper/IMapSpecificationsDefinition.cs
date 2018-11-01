@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/9/2018 11:49:16 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 10/9/2018 11:49:16 PM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0
  *      		
@@ -46,16 +46,18 @@ namespace TypeMapper
     using System.Linq.Expressions;
 
     /// <summary>
-    /// 
+    /// This interface allows you define mapping specification for which property of <typeparamref name="TTargetType"/>
     /// </summary>
+    /// <typeparam name="TTargetType">Target type</typeparam>
+    /// <typeparam name="TSourceType">Source type</typeparam>
     public interface IMapSpecificationsDefinition<TTargetType, TSourceType>
     {
         /// <summary>
-        /// 
+        /// Prepare specification for <typeparamref name="TPropertyType"/> of <typeparamref name="TTargetType"/>
         /// </summary>
         /// <typeparam name="TPropertyType"></typeparam>
         /// <param name="target"></param>
-        /// <returns></returns>
+        /// <returns><see cref="IMapSpecificationDefinition{TTargetType, TSourceType, TPropertyType}"/></returns>
         IMapSpecificationDefinition<TTargetType, TSourceType, TPropertyType> For<TPropertyType>(Expression<Func<TTargetType, TPropertyType>> target);
     }
 }

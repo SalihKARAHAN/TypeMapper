@@ -2,7 +2,7 @@
  *           Creator: Salih KARAHAN <salih.karahan@karahan-lab.com>
  *      Created Date: 10/9/2018 10:55:09 PM
  *      Last Changer: Salih KARAHAN <salih.karahan@karahan-lab.com>
- *      Changed Date: 12/9/2018 01:36 AM
+ *      Changed Date: 11/1/2018 2:55:00 AM
  *      
  *     Since Version: v1.0.0
  *      		
@@ -40,19 +40,28 @@
 namespace TypeMapper
 {
     using System;
+#if RELEASE
     using System.Diagnostics;
+#endif
 
     /// <summary>
-    /// Bu sınıf hedef tipin oluşturulmasında kaynak tipten hangi değerlerin kendisindeki hangi özelliğe atanacağının bilgisini içerir.
+    /// This class includes type couple hash and value assignment specifications of the hash
     /// </summary>
     [Serializable]
+#if RELEASE
     [DebuggerStepThrough]
+    [DebuggerDisplay("{this.Hash}")]
+#endif
     internal sealed class Map
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)] 
+#endif
         internal string Hash { get; private set; }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+#if RELEASE
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+#endif
         internal MapSpecification[] Specifications { get; private set; }
 
         /// <summary>
